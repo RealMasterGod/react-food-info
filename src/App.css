@@ -1,0 +1,10 @@
+.app {
+    color: #008000
+}
+
+/* https://world.openfoodfacts.org/categories.json */
+/*GET CATEGORY List*/
+
+/* productList */
+/* https://world.openfoodfacts.org/products.json?fields=nutrition_grades,product_name */
+/* https://world.openfoodfacts.org/api/v2/search&page=1&fields=categories_tags,product_name,nutrition_grades,image_front_small_url,ingredients */

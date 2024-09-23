@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addFilteredProducts,
   addMoreProducts,
+  increasePageCount,
+  setPrevPage,
 } from "../features/products/productSlice";
 import ListItem from "./ListItem";
 import { CircularProgress } from "@mui/material";
@@ -11,17 +13,14 @@ import { CircularProgress } from "@mui/material";
 const fields =
   "categories_tags_en,product_name,nutrition_grades,image_front_small_url,nutriments,ingredients,labels_tags,code,image_front_url";
 
-const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
-  const [page, setPage] = useState(1);
+const List = ({ searchQ, sort, cat, barcode }) => {
   // DUE TO MY IMPLEMENTATION i NEED A PREV COUNT SO I DONT FETCH SAME PAGE DATA AGAIN AND ADD IT TO THE LIST OF PRODUCTS
-
-  const [prevPage, SetPrevPage] = useState(0);
-  const dispatch = useDispatch();
 
   // NEED THIS TO FETCH EITHER NORMAL PRODUCTS OR FILTERED PRODUCTS
 
   const product = useSelector((state) => state.product);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [data, setData] = useState([]);
 
@@ -73,9 +72,9 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
         // FPAGE IS USED FOR CATEGORY DATA/FILTERED DATA
         // IF FPAGE VALUE IS ZERO THEN SIMPLE FETCH NORMAL DATA
 
-        if (fpage.value !== 0) {
-          url += fpage.value;
-        } else url += page;
+        if (product.fpage.value !== 0) {
+          url += product.fpage.value;
+        } else url += product.page;
         url += `&fields=${fields}`;
         if (cat) {
           url += `&categories_tags_en=${cat}`;
@@ -87,10 +86,10 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
 
         //STORING DATA IN TEMP ARRAY WHETHER ITS FILTERED DATA OR NORMAL
 
-        if (fpage.value !== 0) {
-          if (fpage.value === 1) arr = [...products];
+        if (product.fpage.value !== 0) {
+          if (product.fpage.value === 1) arr = [...products];
           else arr = [...product.filteredProducts, ...products];
-          dispatch(addFilteredProducts({ products, fpage: fpage.value }));
+          dispatch(addFilteredProducts({ products, fpage: product.fpage.value }));
         } else {
           arr = [...product.products, ...products];
           dispatch(addMoreProducts({ products }));
@@ -122,11 +121,11 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
         setError(true);
       }
     };
-    if (prevPage !== page || fpage.value !== 0) {
+    if (product.prevPage !== product.page || product.fpage.value !== 0) {
       //ONLY FETCH DATA IF LOAD MORE WAS CLICKED OR CATEGORY WAS APPLIED
 
       fetchData();
-      SetPrevPage(page);
+      dispatch(setPrevPage())
     } else {
       //IF THIS ELSE RUNS THEN IT MEANS THERE IS NO CATEGORY APPLIED SO JUST GET THE NORMAL DATA
       //FROM REDUX STORE AND APPLY SORT/SEARCH QUERY IF ANY
@@ -149,7 +148,7 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
       }
       setData(arr);
     }
-  }, [page, fpage, prevPage]);
+  }, [product.page, product.fpage, product.prevPage]);
 
   useEffect(() => {
     //WHEN NO NEW DATA IS FETCHED BUT SORT OR QUERY FILTER WAS APPLIED THEN RUN THIS
@@ -185,8 +184,8 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
     //IF NO CATEGORY WAS APPLIED THEN JUST INCREMENT PAGE COUNT FOR NORMAL DATA
     //DATA WILL AGAIN BE FETCHED FROM USE EFFECT SINCE PAGE IS A DEPENDENCY THERE
 
-    if (cat) setFPage({ change: true, value: fpage.value + 1 });
-    else setPage((prev) => prev + 1);
+    if (cat) dispatch(increasePageCount({listType: "category"}))
+    else dispatch(increasePageCount({listType:"page"}))
   };
 
   //CUSTOM SORT FUNC SINCE I COULD NOT FIND A SORT_BY IN OPEN FOOD FACTS API
@@ -201,6 +200,8 @@ const List = ({ searchQ, sort, cat, fpage, setFPage, barcode }) => {
       return a.nutrition_grades < b.nutrition_grades ? 1 : -1;
     } else return a.nutrition_grades > b.nutrition_grades ? 1 : -1;
   }, []);
+
+
   return (
     <div className="overflow-y-auto overflow-x-hidden flex flex-col gap-10 pr-2">
       {cat && loading && (

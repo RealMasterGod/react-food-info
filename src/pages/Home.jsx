@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import List from "../components/List";
 import debounce from "lodash.debounce";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { increasePageCount, resetFpageCount, setFpageCount } from "../features/products/productSlice";
 
 const Home = () => {
   const [searchQ,setSearchQ] = useState("")
   const [sort,setSort] = useState("")
   const [cat,setCat] = useState("")
-  const [fpage,setFPage] = useState({value: 0})
+  // const [fpage,setFPage] = useState({value: 0})
   const [barcode,setBarcode] = useState("")
   const product = useSelector(state => state.product)
+  const dispatch = useDispatch()
   const handleCatChange = (e) => {
     setCat(e.target?.value)
     if(!e.target?.value) {
-      setFPage({value: 0})
+      dispatch(resetFpageCount())
     } else {
-      setFPage({value: 1})
+      dispatch(setFpageCount())
     }
   }
   const debounceOnChange = debounce((e) => {
@@ -58,7 +60,7 @@ const Home = () => {
                         ))}
                     </select>
                 </div>
-                <List searchQ={searchQ} cat={cat} barcode={barcode} sort={sort} fpage={fpage} setFPage={setFPage}  />
+                <List searchQ={searchQ} cat={cat} barcode={barcode} sort={sort} />
             </div>
         </div>
       </div>

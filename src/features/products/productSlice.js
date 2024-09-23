@@ -4,7 +4,10 @@ import axios from "axios"
 const initialState = {
     products: [],
     categories: [],
-    filteredProducts: []
+    filteredProducts: [],
+    fpage: {value: 0},
+    page: 1,
+    prevPage: 0
 }
 
 const url = "https://world.openfoodfacts.org/categories.json"
@@ -32,6 +35,23 @@ export const productSlice = createSlice({
                 state.filteredProducts = [...payload.products]
             else
                 state.filteredProducts = [...state.filteredProducts,...payload.products]
+        },
+        increasePageCount: (state,action) => {
+            if(action.payload.listType === "category") {
+                state.fpage = {value: state.fpage.value+1}
+            } else {
+                state.prevPage = state.page
+                state.page = state.page+1
+            }
+        },
+        setFpageCount: (state,action) => {
+            state.fpage = {value: 1}
+        },
+        setPrevPage: (state,action) => {
+            state.prevPage = state.page
+        },
+        resetFpageCount: (state,action) => {
+            state.fpage = {value: 0}
         }
     },
     extraReducers: (builder) => {
@@ -41,6 +61,6 @@ export const productSlice = createSlice({
     }
 })
 
-export const {addMoreProducts,addFilteredProducts} = productSlice.actions
+export const {addMoreProducts,addFilteredProducts,increasePageCount,resetFpageCount,setPrevPage,setFpageCount} = productSlice.actions
 
 export default productSlice.reducer

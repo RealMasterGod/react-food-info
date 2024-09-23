@@ -66,7 +66,7 @@ const Single = () => {
                 </div>
                 <div className="flex-1 flex gap-5 flex-col">
                   <h1 className=" text-2xl md:text-4xl">
-                    {product?.product_name}
+                    {product?.product_name || "NA"}
                   </h1>
                   <div className="flex flex-wrap gap-2">
                     {product?.categories_tags_en.map((cat) => (
@@ -94,7 +94,7 @@ const Single = () => {
                       Nutrition Grade:{" "}
                     </span>
                     <span className="text-green-500 text-md md:text-lg font-Gloria">
-                      {product?.nutrition_grades || "NA"}
+                      {product?.nutrition_grades || "unknown"}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -107,7 +107,7 @@ const Single = () => {
                           Alcohol:{" "}
                         </span>
                         <span className="text-sm text-gray-800 text-blue-800">
-                          {product?.nutriments?.alcohol || 0} ,
+                          {product?.nutriments?.alcohol || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
@@ -115,19 +115,19 @@ const Single = () => {
                           Carbohydrates:{" "}
                         </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.carboydrates || 0} ,
+                          {product?.nutriments?.carboydrates || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <span className="text-sm text-slate-500">Energy: </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.energy || 0} ,
+                          {product?.nutriments?.energy || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <span className="text-sm text-slate-500">Fat: </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.fat || 0} ,
+                          {product?.nutriments?.fat || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
@@ -135,13 +135,13 @@ const Single = () => {
                           Proteins:{" "}
                         </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.proteins || 0} ,
+                          {product?.nutriments?.proteins || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <span className="text-sm text-slate-500">Salt: </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.salt || 0} ,
+                          {product?.nutriments?.salt || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
@@ -149,19 +149,19 @@ const Single = () => {
                           Saturated Fats:{" "}
                         </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.["saturated-fats"] || 0} ,
+                          {product?.nutriments?.["saturated-fats"] || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <span className="text-sm text-slate-500">Sodium: </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.sodium || 0} ,
+                          {product?.nutriments?.sodium || "NA"} ,
                         </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <span className="text-sm text-slate-500">Sugars: </span>
                         <span className="text-sm text-gray-800">
-                          {product?.nutriments?.sugars || 0} ,
+                          {product?.nutriments?.sugars || "NA"} ,
                         </span>
                       </div>
                     </div>

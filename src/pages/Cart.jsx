@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "../features/cart/cartSlice";
+import {Link} from "react-router-dom"
 
 const Cart = () => {
   const { cart } = useSelector((state) => state.cart);

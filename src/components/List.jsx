@@ -121,7 +121,7 @@ const List = ({ searchQ, sort, cat, barcode }) => {
         setError(true);
       }
     };
-    if (product.prevPage !== product.page || product.fpage.value !== 0) {
+    if (product.prevPage !== product.page || (product.fpage.value !== 0 && cat)) {
       //ONLY FETCH DATA IF LOAD MORE WAS CLICKED OR CATEGORY WAS APPLIED
 
       fetchData();

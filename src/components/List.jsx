@@ -86,7 +86,7 @@ const List = ({ searchQ, sort, cat, barcode }) => {
 
         //STORING DATA IN TEMP ARRAY WHETHER ITS FILTERED DATA OR NORMAL
 
-        if (product.fpage.value !== 0) {
+        if (product.fpage.value !== 0 && cat) {
           if (product.fpage.value === 1) arr = [...products];
           else arr = [...product.filteredProducts, ...products];
           dispatch(addFilteredProducts({ products, fpage: product.fpage.value }));

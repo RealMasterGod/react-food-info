@@ -5,10 +5,11 @@
 
 1. About The App
 2. Problem Statement and Workarounds
-3. Technologies
-4. Prerequisites
-5. Setup
-6. Status/To-Do
+3. Timeline
+4. Technologies
+5. Prerequisites
+6. Setup
+7. Status/To-Do
 
 # 1. About The App
 Food Info site/store where you can search scroll through a list of food items. You can load more food items using the load more button which fetches data from 
@@ -48,7 +49,14 @@ devices.
    - Solution: If you came to this page through home page then I am sending data through link tag of react-router-dom. Otherwise if you came here
    directly then I am fetching data through api call using barcode of product.
 
-# 3. Technologies
+# 3. Timeline
+It Took me about three and a half day to complete this.
+- Day 1: Created the ui (forgot to create the single page here :( )
+- Day 2: Studied the food facts api and implemented basic product list fetching and load more functionality.
+- Day 3: Added the other functionality like search, sort and category filters.
+- Day next half day: Created the single page that I forgot on day 1. Also added cart page and cart functionality.
+
+# 4. Technologies
 I have used ReactJs, Vite to create the frontend and Redux Tookit for state management and to persist the cart in local Storage and manage the products. It uses
 open food facts api (refer to https://world.openfoodfacts.org/files/api-documentation.html for more info).
 
@@ -118,11 +126,11 @@ You can use this api to get information about various food item. The database is
 If you are looking for something do with food products and their various traits then you should definitely check it out.
 Site: https://world.openfoodfacts.org/files/api-documentation.html
 
-# 3. Prerequisites
+# 5. Prerequisites
 ## Install Node Package Manager
 Refer to https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
-# 5. Setup To Run Locally
+# 6. Setup To Run Locally
 1. Clone this repo and go to this directory and open terminal here
 2. type the following commands:
    ```bash
@@ -132,7 +140,7 @@ Refer to https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 4. NOTE: Since data is being fetched from external api sometimes it may not fetch data and show an error. In that case just reload. If it persists then contact me
    and I'll look into it if the problem is in the app.
 
-# 6. Status/To-Do
+# 7. Status/To-Do
 - Create a About Page
 - Create a Contact Page
 - Create Login/SignIn features (You will see these buttons but they aren't working) 

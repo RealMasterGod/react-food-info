@@ -22,9 +22,9 @@ const Cart = () => {
                       src={product?.image_front_small_url || "/extralogo.png"}
                       alt=""
                     />
-                    <h1 className="text-xl font-bold">
+                    <Link state={{ product }} className="link" to={`/${product?.code}`}><h1 className="text-xl font-bold">
                       {product?.product_name || "NA"}
-                    </h1>
+                    </h1></Link>
                     <div className="">
                       <span className="text-slate-800 text-lg font-semibold">
                         Category:

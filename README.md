@@ -52,11 +52,12 @@ devices.
    directly then I am fetching data through api call using barcode of product. I also reset my global search and category states.
 
 # 3. Timeline
-It Took me about three and a half day to complete this.
+It Took me about 4 day to complete this.
 - Day 1: Created the ui (forgot to create the single page here :( )
 - Day 2: Studied the food facts api and implemented basic product list fetching and load more functionality.
 - Day 3: Added the other functionality like search, sort and category filters.
-- Day next half day: Created the single page that I forgot on day 1. Also added cart page and cart functionality.
+- Day 4: Created the single page that I forgot on day 1. Also added cart page and cart functionality. I changed the search feature
+  implementation now it makes an api call and fetch the results from there instead of searching through products which had been fetched so far. 
 
 # 4. Technologies
 I have used ReactJs, Vite to create the frontend and Redux Tookit for state management and to persist the cart in local Storage and manage the products. It uses

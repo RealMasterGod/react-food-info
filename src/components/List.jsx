@@ -13,7 +13,7 @@ import { CircularProgress } from "@mui/material";
 const fields =
   "categories_tags_en,product_name,nutrition_grades,image_front_small_url,nutriments,ingredients,labels_tags,code,image_front_url";
 
-const List = ({ searchQ, sort, cat, barcode }) => {
+const List = ({ sort, barcode }) => {
   // DUE TO MY IMPLEMENTATION i NEED A PREV COUNT SO I DONT FETCH SAME PAGE DATA AGAIN AND ADD IT TO THE LIST OF PRODUCTS
 
   // NEED THIS TO FETCH EITHER NORMAL PRODUCTS OR FILTERED PRODUCTS
@@ -55,6 +55,7 @@ const List = ({ searchQ, sort, cat, barcode }) => {
       setError(false);
     }
   }, [barcode]);
+  // console.log(searchQ,product.fpage.value)
 
   useEffect(() => {
     //FETCHING ALL DATA HERE IF YOU DONT APPLY ANY CATEGORY FILTER THEN IT FETCHES NORMAL DATA
@@ -66,27 +67,37 @@ const List = ({ searchQ, sort, cat, barcode }) => {
       setLoading(true);
       setError(false);
       try {
-        var url =
+        var url1 =
           "https://world.openfoodfacts.org/api/v1/search?page_size=10&page=";
+        var url2 = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${product.searchQ}&json=true&page_size=10&page=`
 
         // FPAGE IS USED FOR CATEGORY DATA/FILTERED DATA
         // IF FPAGE VALUE IS ZERO THEN SIMPLE FETCH NORMAL DATA
 
         if (product.fpage.value !== 0) {
-          url += product.fpage.value;
-        } else url += product.page;
-        url += `&fields=${fields}`;
-        if (cat) {
-          url += `&categories_tags_en=${cat}`;
+          url1 += product.fpage.value;
+          url2 += product.fpage.value
+        } else url1 += product.page;
+        url1 += `&fields=${fields}`;
+        url2 += `&fields=${fields}`;
+        if (product.cat) {
+          url1 += `&categories_tags_en=${product.cat}`;
         }
-        const res = await axios.get(url);
+        var res
+        if(product.searchQ) {
+          res = await axios.get(url2)
+          console.log(res)
+        } else {
+          res = await axios.get(url1);
+        }
+        
         const { products } = res.data;
 
         var arr = [];
 
         //STORING DATA IN TEMP ARRAY WHETHER ITS FILTERED DATA OR NORMAL
 
-        if (product.fpage.value !== 0 && cat) {
+        if (product.fpage.value !== 0 && (product.cat || product.searchQ)) {
           if (product.fpage.value === 1) arr = [...products];
           else arr = [...product.filteredProducts, ...products];
           dispatch(addFilteredProducts({ products, fpage: product.fpage.value }));
@@ -95,21 +106,9 @@ const List = ({ searchQ, sort, cat, barcode }) => {
           dispatch(addMoreProducts({ products }));
         }
 
-        //IF THERE IS SORT/SEARCH QUERY THEN DO THESE OPERATION ON ANY DATA WHETHER FILTERED OR NORMAL
+        //IF THERE IS SORT QUERY THEN DO THESE OPERATION ON ANY DATA WHETHER FILTERED OR NORMAL
 
         if (sort) arr.sort((a, b) => compare(a, b, sort));
-        if (searchQ) {
-          arr = arr.filter((item) => {
-            if (
-              item?.product_name
-                .toLowerCase()
-                .match(searchQ.toLocaleLowerCase()) ||
-              item?.code?.toLowerCase()?.match(searchQ.toLocaleLowerCase())
-            ) {
-              return item;
-            }
-          });
-        }
 
         //STORE DATA IN ARRAY
 
@@ -121,53 +120,28 @@ const List = ({ searchQ, sort, cat, barcode }) => {
         setError(true);
       }
     };
-    if (product.prevPage !== product.page || (product.fpage.value !== 0 && cat)) {
+    if (product.prevPage !== product.page || (product.fpage.value !== 0 && (product.cat || product.searchQ))) {
       //ONLY FETCH DATA IF LOAD MORE WAS CLICKED OR CATEGORY WAS APPLIED
 
       fetchData();
       dispatch(setPrevPage())
     } else {
       //IF THIS ELSE RUNS THEN IT MEANS THERE IS NO CATEGORY APPLIED SO JUST GET THE NORMAL DATA
-      //FROM REDUX STORE AND APPLY SORT/SEARCH QUERY IF ANY
+      //FROM REDUX STORE AND APPLY SORT QUERY IF ANY
 
       var arr = [...product.products];
       if (sort) {
         arr.sort((a, b) => compare(a, b, sort));
-      }
-      if (searchQ) {
-        arr = arr.filter((item) => {
-          if (
-            item?.product_name
-              .toLowerCase()
-              .match(searchQ.toLocaleLowerCase()) ||
-            item?.code?.toLowerCase()?.match(searchQ.toLocaleLowerCase())
-          ) {
-            return item;
-          }
-        });
       }
       setData(arr);
     }
   }, [product.page, product.fpage, product.prevPage]);
 
   useEffect(() => {
-    //WHEN NO NEW DATA IS FETCHED BUT SORT OR QUERY FILTER WAS APPLIED THEN RUN THIS
-    //IF CATEGORY IS THERE ON CURRENT DATA THEN GET FILTERED DATA OTHERWISE GET NORMAL DATA
+    //WHEN NO NEW DATA IS FETCHED BUT SORT FILTER WAS APPLIED THEN RUN THIS
+    //IF CATEGORY OR SEARCH IS THERE ON CURRENT DATA THEN GET FILTERED DATA OTHERWISE GET NORMAL DATA
 
-    var arr = [...(cat ? product.filteredProducts : product.products)];
-
-    //APPLY SEARCH IF ANY
-
-    if (searchQ) {
-      arr = arr.filter((item) => {
-        if (
-          item?.product_name.toLowerCase().match(searchQ.toLocaleLowerCase()) ||
-          item?.code?.toLowerCase()?.match(searchQ.toLocaleLowerCase())
-        ) {
-          return item;
-        }
-      });
-    }
+    var arr = [...(product.cat || product.searchQ ? product.filteredProducts : product.products)];
 
     //APPLY SORT IF ANY
 
@@ -175,16 +149,16 @@ const List = ({ searchQ, sort, cat, barcode }) => {
       arr.sort((a, b) => compare(a, b, sort));
     }
     setData(arr);
-  }, [searchQ, sort]);
+  }, [sort]);
 
   const handlePageChange = () => {
-    //IF CATEGORY FILTER WAS APPLIED AND THEN LOAD MORE WAS CLICKED THEN
+    //IF CATEGORY FILTER OR SEARCH WAS APPLIED AND THEN LOAD MORE WAS CLICKED THEN
     //UPDATE CATEGORY PAGE TO NEXT PAGE AND NOW DATA WILL AGAIN BE FETCHED FROM ABOVE USE EFFECT
     //SINCE FPAGE IS A DEPENDENCY THERE
     //IF NO CATEGORY WAS APPLIED THEN JUST INCREMENT PAGE COUNT FOR NORMAL DATA
     //DATA WILL AGAIN BE FETCHED FROM USE EFFECT SINCE PAGE IS A DEPENDENCY THERE
 
-    if (cat) dispatch(increasePageCount({listType: "category"}))
+    if (product.cat || product.searchQ) dispatch(increasePageCount({listType: "category"}))
     else dispatch(increasePageCount({listType:"page"}))
   };
 
@@ -204,12 +178,12 @@ const List = ({ searchQ, sort, cat, barcode }) => {
 
   return (
     <div className="overflow-y-auto overflow-x-hidden flex flex-col gap-10 pr-2">
-      {cat && loading && (
+      {product.cat && loading && (
         <div className="self-center text-xs">
           <CircularProgress size={20} color="success" />
         </div>
       )}
-      {cat && !loading && error && (
+      {product.cat && !loading && error && (
         <span className="self-center text-red-600 font-bold">
           An Error Occurred!
         </span>

@@ -7,7 +7,9 @@ const initialState = {
     filteredProducts: [],
     fpage: {value: 0},
     page: 1,
-    prevPage: 0
+    prevPage: 0,
+    searchQ: "",
+    cat: ""
 }
 
 const url = "https://world.openfoodfacts.org/categories.json"
@@ -52,6 +54,13 @@ export const productSlice = createSlice({
         },
         resetFpageCount: (state,action) => {
             state.fpage = {value: 0}
+        },
+        setFilterQuery: (state,action) => {
+            if(action.payload.type === "cat") {
+                state.cat = action.payload.value
+            } else {
+                state.searchQ = action.payload.value
+            }
         }
     },
     extraReducers: (builder) => {
@@ -61,6 +70,6 @@ export const productSlice = createSlice({
     }
 })
 
-export const {addMoreProducts,addFilteredProducts,increasePageCount,resetFpageCount,setPrevPage,setFpageCount} = productSlice.actions
+export const {addMoreProducts,addFilteredProducts,increasePageCount,resetFpageCount,setFilterQuery,setPrevPage,setFpageCount} = productSlice.actions
 
 export default productSlice.reducer

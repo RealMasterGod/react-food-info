@@ -1,10 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "../features/cart/cartSlice";
 import {Link} from "react-router-dom"
+import { setFilterQuery } from "../features/products/productSlice";
+import { useEffect } from "react";
 
 const Cart = () => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFilterQuery({type: "cat", value: ""}))
+    dispatch(setFilterQuery({type: "search", value: ""}))
+  },[])
   return (
     <div className="w-full lg:w-[80%] h-[calc(100vh-56px)] sm:h-[calc(100vh-81px)] p-2 mx-auto">
       <div className="bg-myGreenLight h-full flex xl:flex-row flex-col gap-4">

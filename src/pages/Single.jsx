@@ -5,6 +5,7 @@ import { addToCart } from "../features/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
+import { setFilterQuery } from "../features/products/productSlice";
 
 const Single = () => {
   const params = useParams();
@@ -15,6 +16,7 @@ const Single = () => {
   const dispatch = useDispatch();
   const [inCart, setInCart] = useState(false);
   var { cart } = useSelector((state) => state.cart);
+
 
   useEffect(() => {
     const fetchSingleProduct = async () => {
@@ -49,6 +51,8 @@ const Single = () => {
       );
       searchCart && setInCart(true);
     }
+      dispatch(setFilterQuery({type: "cat", value: ""}))
+      dispatch(setFilterQuery({type: "search", value: ""}))
   }, []);
   return (
     <div className="w-full lg:w-[80%] h-[calc(100vh-56px)] sm:h-[calc(100vh-81px)] p-2 mx-auto">

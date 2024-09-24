@@ -2,18 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import List from "../components/List";
 import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
-import { increasePageCount, resetFpageCount, setFpageCount } from "../features/products/productSlice";
+import { resetFpageCount, setFilterQuery, setFpageCount } from "../features/products/productSlice";
 
 const Home = () => {
-  const [searchQ,setSearchQ] = useState("")
   const [sort,setSort] = useState("")
-  const [cat,setCat] = useState("")
-  // const [fpage,setFPage] = useState({value: 0})
   const [barcode,setBarcode] = useState("")
   const product = useSelector(state => state.product)
   const dispatch = useDispatch()
   const handleCatChange = (e) => {
-    setCat(e.target?.value)
+    dispatch(setFilterQuery({type: "cat", value: e.target?.value}))
     if(!e.target?.value) {
       dispatch(resetFpageCount())
     } else {
@@ -21,8 +18,18 @@ const Home = () => {
     }
   }
   const debounceOnChange = debounce((e) => {
-    setSearchQ(e.target?.value)
-  },200)
+    dispatch(setFilterQuery({type: "search", value: e.target?.value}))
+    if(e.target?.value) {
+      dispatch(setFpageCount())
+    } else {
+      if(product.cat) {
+        dispatch(setFpageCount())
+      }
+      else 
+      dispatch(resetFpageCount())
+      
+    }
+  },500)
 
   const debounceOnBarChange = debounce((e) => {
     setBarcode(e.target?.value)
@@ -60,7 +67,7 @@ const Home = () => {
                         ))}
                     </select>
                 </div>
-                <List searchQ={searchQ} cat={cat} barcode={barcode} sort={sort} />
+                <List barcode={barcode} sort={sort} />
             </div>
         </div>
       </div>

@@ -22,17 +22,19 @@ devices.
 1. Problem: Fetch Data from open food facts api.
   - Solution: Used axios to fetch the data
 
-2. Problem: Create a search by name and barcode functionality
-   - Solution: For Searching by name its easy I just created a state that changes when user type something (it has debounce time of 300ms though its not needed as we
-   are not making any api call here). For Search By Barcode
-   it's similar but here I am making api call for a global search through all products in database so it use a must have debounce time (500ms)
+2. Problem: Create a search by name and barcode functionality and category filter.
+   - Solution: For Searching by name its easy I just created a redux state that changes when user type something (it has debounce time of 500ms sp as to not
+     overload the api with requests). For Search By Barcode
+   it's similar as here I am making api call for a global search through all products in database so it also has a must have debounce time (500ms)
    so I dont overload the external api with requests for each letter that user types.
    Use lodash.debounce library for this.
    ```bash
    npm i lodash.debounce
    ```
-3. Problem: Create a Sort filter
-   - Solution: Similar to search filter. Here I check if the sort state variable has a value other than undefined then sort the product list.
+   For category filter it is similar to search but api has a different end point so different api call.
+   If search, barcode and category filter are applied together the search takes priority, after that category and then barcode.
+4. Problem: Create a Sort filter
+   - Solution: Similar to search filter. Here I check if the local sort state variable has a value other than undefined then sort the product list.
    (Note that there are two product lists one is the normal list where no category filter is applied and another is filtered products list where
    category filter is applied. Load more functionality works for both list as well as all search and sort filter. However normal list is permanant when you load more
    whereas filtered list changes again when you change the category.)
@@ -43,18 +45,19 @@ devices.
 
 6. Problem: Cart Feature
    - Solution: This is easy just used redux and redux persist feature to add and remove products from cart. It check if a product is already in cart
-   if it is then you cant add this product to cart again.
+   if it is then you cant add this product to cart again. I also reset my global search and category states.
    
 8. Problem: Single Page
    - Solution: If you came to this page through home page then I am sending data through link tag of react-router-dom. Otherwise if you came here
-   directly then I am fetching data through api call using barcode of product.
+   directly then I am fetching data through api call using barcode of product. I also reset my global search and category states.
 
 # 3. Timeline
-It Took me about three and a half day to complete this.
+It Took me about 4 day to complete this.
 - Day 1: Created the ui (forgot to create the single page here :( )
 - Day 2: Studied the food facts api and implemented basic product list fetching and load more functionality.
 - Day 3: Added the other functionality like search, sort and category filters.
-- Day next half day: Created the single page that I forgot on day 1. Also added cart page and cart functionality.
+- Day 4: Created the single page that I forgot on day 1. Also added cart page and cart functionality. I changed the search feature
+  implementation now it makes an api call and fetch the results from there instead of searching through products which had been fetched so far. 
 
 # 4. Technologies
 I have used ReactJs, Vite to create the frontend and Redux Tookit for state management and to persist the cart in local Storage and manage the products. It uses
